@@ -17,109 +17,16 @@ async def on_message(message):
 	msg = message.content
 	
 	if msg.startswith('$help'):
-		helpmessage = '''
-$help - Shows this message
-$cleardb - Clears the db, only doable by Tocas#5027
-$add "key" "value" - Adds a key and a value to a db. If the key is already there, then it just appends the value to the list that corresponds to the key.
-$fetch key - Gets the value of a key in the database
-$del key - Deletes a key from the database
-$listkeys - Lists the keys in the database
-$listvalues - Lists the values in the database
-$delvalue "key" "value" - Deletes a specific value from a list
-'''
-		await message.channel.send(helpmessage)
-
-	if msg.startswith('$cleardb'):
-		if message.author.id == 715658349382860802:
-			for i in db.keys():
-				del db[i]
-			await message.channel.send("Cleared the db")
-		else:
-			await message.channel.send("bruh you're not tocas smh")
-	
-	if msg.startswith('$add '):
-		rest = msg[5:]
-		if rest.count('"') != 4:
-			await message.channel.send("bruh format your command correctly smh")
-		else:
-			for i in range(len(rest)):
-				if rest[i] == '"':
-					key = rest[i+1:rest[i+1:].find('"')+1]
-					rest = rest[rest[i+1:].find('"')+2:]
-					break
-			for i in range(len(rest)):
-				if rest[i] == '"':
-					value = rest[i+1:rest[i+1:].find('"')+2]
-					break
-			if key not in db.keys():
-				db[key] = [value]
-				await message.channel.send('Added ' + key + ' to the database as a key, with a value of ' + value)
-			else:
-				if value in db[key]:
-					await message.channel.send("Bruh you can't add a value to a list twice")
-				else:
-					templist = list(db[key])
-					templist.append(value)
-					db[key] = templist
-					await message.channel.send('Added ' + value + ' to the database as a part of ' + key + "'s list")
-	
-	if msg.startswith('$fetch '):
-		rest = msg[7:]
-		if rest in db.keys():
-			await message.channel.send(list(db[rest]))
-		else:
-			await message.channel.send("smh that's not even in the database lol")
-	
-	if msg.startswith('$del '):
-		rest = msg[5:]
-		if rest in db.keys():
-			del db[rest]
-			await message.channel.send('Deleted ' + rest + ' from the database')
-		else:
-			await message.channel.send("Bruh this isn't even in the database smh")
-	
-	if msg.startswith('$listkeys'):
-		await message.channel.send(list(db.keys()))
-	
-	if msg.startswith('$listvalues'):
-		output = ''
-		for i in db.keys():
-			output += i + ': ' + str(list(db[i])) + '\n'
-		await message.channel.send(output)
-	
-	if msg.startswith('$delvalue '):
-		rest = msg[10:]
-		if rest.count('"') != 4:
-			await message.channel.send('bruh format your message properly smh')
-		else:
-			for i in range(len(rest)):
-				if rest[i] == '"':
-					key = rest[i+1:rest[i+1:].find('"')+1]
-					rest = rest[rest[i+1:].find('"')+2:]
-					break
-			if key not in db.keys():
-				await message.channel.send("bruh that key isn't even in the database")
-			else:
-				for i in range(len(rest)):
-					if rest[i] == '"':
-						value = rest[i+1:rest[i+1:].find('"')+2]
-						break
-				if value not in db[key]:
-					await message.channel.send("bruh that value isn't in the list of the key")
-				else:
-					templist = db[key]
-					templist.remove(value)
-					db[key] = templist
-					await message.channel.send("Deleted " + value + " from " + key + "'s list in the database")
-	
-	if msg.startswith('$embed'):
-		embed = discord.Embed(
-			title="hello!",
-			description="cool description!",
+		helpmessage = discord.Embed(
+			title="List of Commands",
+			description="Math Problem Dispenser is an awesome discord bot made by Tocas#5027. It can give you problems from a wide variety of contests, all while being clear and simple to use!",
 			color=discord.Color.blue()
 		)
-		embed.add_field(name="cool field", value="cool field value")
-		await message.channel.send(embed=embed)
+		helpmessage.add_field(name="$help", value="Shows this message", inline=False)
+		helpmessage.add_field(name='$amc10', value='Gives you an AMC 10 problem of your choice. The syntax is as follows: `$amc10 [year] [a/b (only if year is 2002 and up)] [problem number from 1 to 25]`')
+		helpmessage.add_field(name='$amc12', value='Gives you an AMC 12 problem of your choice. The syntax is as follows: `$amc10 [year] [a/b (only if year is 2002 and up)] [problem number from 1 to 25]`')
+		helpmessage.add_field(name="$aime", value="Gives you an AIME problem of your choice. The syntax is as follows: `$aime [year] [i/ii (only if year is 2000 and up)] [problem number from 1 to 15]`.")
+		await message.channel.send(embed=helpmessage)
 	
 	if msg.lower().startswith('$aime '):
 		rest = msg[6:]
