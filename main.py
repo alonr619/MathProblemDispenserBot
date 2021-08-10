@@ -16,20 +16,48 @@ async def on_message(message):
 	
 	msg = message.content
 	
-	if msg.startswith('$help'):
+	if 'prefix' not in db.keys():
+		db['prefix'] = dict()
+
+	if str(message.guild.id) in list(dict(db['prefix']).keys()):
+		prefix = dict(db['prefix'])[str(message.guild.id)]
+	else:
+		prefix = '$'
+
+	if msg.startswith('$cleardb'):
+		if message.author.id != 715658349382860802:
+			await message.channel.send("Nice try but you're not Tocas")
+			return
+		for i in db.keys():
+			del db[i]
+		await message.channel.send("db cleared")
+
+	if msg.startswith('$fetch '):
+		await message.channel.send(dict(db[msg[7:]]))
+
+	if msg.startswith(prefix + 'prefix '):
+		if len(msg) <= 7+len(prefix):
+			await message.channel.send('bruh thats not a valid prefix')
+			return
+		a = dict(db['prefix'])
+		a[message.guild.id] = msg[7+len(prefix):]
+		db['prefix'] = a
+		await message.channel.send('Prefix changed')
+
+	if msg.startswith(prefix + 'help'):
 		helpmessage = discord.Embed(
 			title="List of Commands",
 			description="Math Problem Dispenser is an awesome discord bot made by Tocas#5027. It can give you problems from a wide variety of contests, all while being clear and simple to use!",
 			color=discord.Color.blue()
 		)
-		helpmessage.add_field(name="$help", value="Shows this message", inline=False)
-		helpmessage.add_field(name='$amc10', value='Gives you an AMC 10 problem of your choice. The syntax is as follows: `$amc10 [year] [a/b (only if year is 2002 and up)] [problem number from 1 to 25]`')
-		helpmessage.add_field(name='$amc12', value='Gives you an AMC 12 problem of your choice. The syntax is as follows: `$amc10 [year] [a/b (only if year is 2002 and up)] [problem number from 1 to 25]`')
-		helpmessage.add_field(name="$aime", value="Gives you an AIME problem of your choice. The syntax is as follows: `$aime [year] [i/ii (only if year is 2000 and up)] [problem number from 1 to 15]`.")
+		helpmessage.add_field(name=prefix + "help", value="Shows this message", inline=False)
+		helpmessage.add_field(name=prefix + 'amc10', value='Gives you an AMC 10 problem of your choice. The syntax is as follows: `$amc10 [year] [a/b (only if year is 2002 and up)] [problem number from 1 to 25]`', inline=False)
+		helpmessage.add_field(name=prefix + 'amc12', value='Gives you an AMC 12 problem of your choice. The syntax is as follows: `$amc10 [year] [a/b (only if year is 2002 and up)] [problem number from 1 to 25]`', inline=False)
+		helpmessage.add_field(name=prefix + "aime", value="Gives you an AIME problem of your choice. The syntax is as follows: `$aime [year] [i/ii (only if year is 2000 and up)] [problem number from 1 to 15]`.", inline=False)
 		await message.channel.send(embed=helpmessage)
 	
-	if msg.lower().startswith('$aime '):
-		rest = msg[6:]
+	if msg.lower().startswith(prefix + 'aime '):
+		rest = msg[5+len(prefix):]
 		try:
 			if int(rest.split()[0]) < 1983 or int(rest.split()[0]) > 2020:
 				await message.channel.send('bruh thats not a valid year')
@@ -61,8 +89,8 @@ async def on_message(message):
 		except:
 			await message.channel.send('an error happened somewhere along the processing of your command, are you sure you put in integers for the year and problem number?')
 	
-	if msg.lower().startswith('$amc10 '):
-		rest = msg[7:]
+	if msg.lower().startswith(prefix + 'amc10 '):
+		rest = msg[6+len(prefix):]
 		try:
 			if int(rest.split()[0]) < 2000 or int(rest.split()[0]) > 2019:
 				await message.channel.send('thats not a valid year')
@@ -93,8 +121,8 @@ async def on_message(message):
 		except:
 			await message.channel.send('something went wrong, are you sure you put integers for the year and problem number?')
 	
-	if msg.lower().startswith('$amc12 '):
-		rest = msg[7:]
+	if msg.lower().startswith(prefix+'amc12 '):
+		rest = msg[6+len(prefix):]
 		try:
 			if int(rest.split()[0]) < 2000 or int(rest.split()[0]) > 2019:
 				await message.channel.send('thats not a valid year')
