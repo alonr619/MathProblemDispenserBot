@@ -135,7 +135,7 @@ $delvalue "key" "value" - Deletes a specific value from a list
 					await message.channel.send('thats not a valid question number')
 					return
 				else:
-					url = 'https://mathproblemdispenserbotstorage.web.app/AIMEProblems/' + rest.split()[0] + '-' + rest.split()[1] + '.png'
+					url = 'https://mathproblemdispenserbotstorage.web.app/AIME/' + rest.split()[0] + '/' + rest.split()[1] + '/statement.png'
 			else:
 				if len(rest.split()) != 3:
 					await message.channel.send('too many/not enough parameters')
@@ -147,9 +147,9 @@ $delvalue "key" "value" - Deletes a specific value from a list
 					await message.channel.send('thats not a valid question number')
 					return
 				elif rest.split()[1].lower() == 'i':
-					url = 'https://mathproblemdispenserbotstorage.web.app/AIMEProblems/' + rest.split()[0] + '-1-' + rest.split()[2] + '.png'
+					url = 'https://mathproblemdispenserbotstorage.web.app/AIME/' + rest.split()[0] + '/1/' + rest.split()[2] + '/statement.png'
 				else:
-					url = 'https://mathproblemdispenserbotstorage.web.app/AIMEProblems/' + rest.split()[0] + '-2-' + rest.split()[2] + '.png'
+					url = 'https://mathproblemdispenserbotstorage.web.app/AIME/' + rest.split()[0] + '/2/' + rest.split()[2] + '/statement.png'
 			await message.channel.send(url)
 		except:
 			await message.channel.send('an error happened somewhere along the processing of your command, are you sure you put in integers for the year and problem number?')
