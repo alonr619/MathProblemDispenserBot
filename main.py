@@ -164,7 +164,7 @@ $delvalue "key" "value" - Deletes a specific value from a list
 				if len(rest.split()) != 2:
 					await message.channel.send('thats not a valid format')
 					return
-				if int(rest.split()[1]) > 15 or int(rest.split()[1]) < 1:
+				if int(rest.split()[1]) > 25 or int(rest.split()[1]) < 1:
 					await message.channel.send('thats not a valid problem number')
 					return
 				else:
@@ -177,7 +177,7 @@ $delvalue "key" "value" - Deletes a specific value from a list
 				if rest.split()[1].lower() != 'a' and rest.split()[1].lower() != 'b':
 					await message.channel.send('for the second parameter, put either a or b')
 					return
-				if int(rest.split()[2]) > 15 or int(rest.split()[2]) < 1:
+				if int(rest.split()[2]) > 25 or int(rest.split()[2]) < 1:
 					await message.channel.send('thats not a valid problem number')
 					return
 				else:
