@@ -42,7 +42,7 @@ async def on_message(message):
 		a = dict(db['prefix'])
 		a[message.guild.id] = msg[7+len(prefix):]
 		db['prefix'] = a
-		await message.channel.send('Prefix changed')
+		await message.channel.send('Prefix changed to `' + msg[7+len(prefix):] + '`')
 
 	if msg.startswith(prefix + 'help'):
 		helpmessage = discord.Embed(
