@@ -185,6 +185,38 @@ $delvalue "key" "value" - Deletes a specific value from a list
 					await message.channel.send(url)
 		except:
 			await message.channel.send('something went wrong, are you sure you put integers for the year and problem number?')
+	
+	if msg.lower().startswith('$amc12 '):
+		rest = msg[7:]
+		try:
+			if int(rest.split()[0]) < 2000 or int(rest.split()[0]) > 2019:
+				await message.channel.send('thats not a valid year')
+				return
+			elif int(rest.split()[0]) < 2002:
+				if len(rest.split()) != 2:
+					await message.channel.send('thats not a valid format')
+					return
+				if int(rest.split()[1]) > 25 or int(rest.split()[1]) < 1:
+					await message.channel.send('thats not a valid problem number')
+					return
+				else:
+					url = 'https://mathproblemdispenserbotstorage.web.app/AMC/' + rest.split()[0] + '/12/' + rest.split()[1] + '/statement.png'
+					await message.channel.send(url)
+			else:
+				if len(rest.split()) != 3:
+					await message.channel.send('thats not a valid format')
+					return
+				if rest.split()[1].lower() != 'a' and rest.split()[1].lower() != 'b':
+					await message.channel.send('for the second parameter, put either a or b')
+					return
+				if int(rest.split()[2]) > 25 or int(rest.split()[2]) < 1:
+					await message.channel.send('thats not a valid problem number')
+					return
+				else:
+					url = 'https://mathproblemdispenserbotstorage.web.app/AMC/' + rest.split()[0] + '/12' + rest.split()[1].upper() + '/' + rest.split()[2] + '/statement.png'
+					await message.channel.send(url)
+		except:
+			await message.channel.send('something went wrong, are you sure you put integers for the year and problem number?')
 
 keep_alive()
 client.run(os.environ['TOKEN'])
