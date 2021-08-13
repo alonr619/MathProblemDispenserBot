@@ -2,13 +2,19 @@ import discord
 import os
 from replit import db
 from keep_alive import keep_alive
+from discord.ext.commands import has_permissions
 
 from discord.ext import commands
 
 def get_prefix(client, message):
-  return str(dict(db['prefix'])[str(message.guild.id)])
+	if 'prefix' not in db.keys():
+		db['prefix'] = dict()
+	if str(message.guild.id) not in dict(db['prefix']):
+		return '$'
+	return str(dict(db['prefix'])[str(message.guild.id)])
 
-client = commands.Bot(command_prefix = get_prefix) 
+client = commands.Bot(command_prefix = get_prefix)
+
 client.remove_command('help')
 
 @client.event
@@ -74,6 +80,7 @@ async def on_message(message):
 
 
 @client.command()
+@has_permissions(administrator = True)
 async def prefix(ctx, content = None):
   if content == None:
     await ctx.send("Hallo what is the prefix?")
@@ -195,6 +202,70 @@ async def aime(message, *, rest = None):
           await message.channel.send(url)
     except:
       await message.channel.send('an error happened somewhere along the processing of your command, are you sure you put in integers for the year and problem number?')
+
+@client.command()
+async def add(message, *, rest=None):
+	if 'attempt' not in db.keys():
+		db['attempt'] = dict()
+	if rest == None:
+		await message.channel.send('Hallo where is the problem')
+	
+	else:
+		if rest.split()[0].lower() not in ['aime', 'amc10', 'amc12']:
+			await message.channel.send('Bruh thats not a valid contest')
+			return
+		if str(message.author.id) not in dict(db['attempt']).keys():
+			db['attempt'][str(message.author.id)] = []
+		if rest.split()[0].lower() == 'aime':
+			try:
+				if int(rest.split()[1]) < 1983 or int(rest.split()[1]) > 2020:
+					await message.channel.send('bruh thats not a valid year')
+					return
+				elif int(rest.split()[1]) >= 1983 and int(rest.split()[1]) < 2000:
+					if len(rest.split()) != 3:
+						await message.channel.send('too many/not enough parameters')
+						return
+					elif int(rest.split()[2]) < 1 or int(rest.split()[2]) > 15:
+						await message.channel.send('thats not a valid question number')
+						return
+					else:
+						url = 'https://mathproblemdispenserbotstorage.web.app/AIME/' + rest.split()[1] + '/' + rest.split()[2] + '/statement.png'
+						await message.channel.send(url)
+						await message.channel.send('Added AIME ' + rest.split()[1] + ', problem ' + rest.split()[3] + ' to your list of problems!')
+						a = dict(db['attempt'])[str(message.author.id)]
+						a.append('AIME ' + str(rest.split()[1]) + ' ' + str(rest.split()[2]))
+						db['attempt'][str(message.author.id)] = a
+				else:
+					if len(rest.split()) != 4:
+						await message.channel.send('too many/not enough parameters')
+						return
+					elif rest.split()[2].lower() != 'i' and rest.split()[2].lower() != 'ii':
+						await message.channel.send('thats not a valid test number (i or ii)')
+						return
+					elif int(rest.split()[3]) < 1 or int(rest.split()[3]) > 15:
+						await message.channel.send('thats not a valid question number')
+						return
+					elif rest.split()[2].lower() == 'i':
+						url = 'https://mathproblemdispenserbotstorage.web.app/AIME/' + rest.split()[1] + '/1/' + rest.split()[3] + '/statement.png'
+						await message.channel.send(url)
+						await message.channel.send('Added AIME ' + rest.split()[1] + ' i, problem ' + rest.split()[3] + ' to your list of problems!')
+						a = dict(db['attempt'])[str(message.author.id)]
+						a.append('AIME ' + str(rest.split()[1]) + ' i ' + str(rest.split()[3]))
+						db['attempt'][str(message.author.id)] = a
+					else:
+						url = 'https://mathproblemdispenserbotstorage.web.app/AIME/' + rest.split()[1] + '/2/' + rest.split()[3] + '/statement.png'
+						await message.channel.send(url)
+						await message.channel.send('Added AIME ' + rest.split()[1] + ' ii, problem ' + rest.split()[3] + ' to your list of problems!')
+						a = dict(db['attempt'])[str(message.author.id)]
+						a.append('AIME ' + str(rest.split()[1]) + ' ii ' + str(rest.split()[3]))
+						db['attempt'][str(message.author.id)] = a
+			except:
+				await message.channel.send('an error happened somewhere along the processing of your command, are you sure you put in integers for the year and problem number?')
+
+@client.command()
+async def invite(message, *, rest=None):
+	await message.channel.send('Here is the link to invite me: https://discord.com/api/oauth2/authorize?client_id=871519299716661259&permissions=8&scope=bot')
+
 
 keep_alive()
 client.run(os.environ['TOKEN'])
