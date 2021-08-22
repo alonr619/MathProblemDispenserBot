@@ -55,7 +55,7 @@ async def on_message(message):
         helpmessage = discord.Embed(
             title="List of Commands",
             description=
-            "Math Problem Dispenser is an awesome discord bot made by Tocas#5027 and bobthefam#6969. It can give you problems from a wide variety of contests, all while being clear and simple to use!",
+            "Math Problem Dispenser is an awesome discord bot made by Tocas#5027 and and bobthefam#6969. It can give you problems from a wide variety of contests, all while being clear and simple to use!",
             color=discord.Color.blue())
         helpmessage.add_field(name=prefix + "help",
                               value="Shows this message",
@@ -263,8 +263,56 @@ async def add(message, *, rest=None):
 				await message.channel.send('an error happened somewhere along the processing of your command, are you sure you put in integers for the year and problem number?')
 
 @client.command()
-async def invite(message, *, rest=None):
-	await message.channel.send('Here is the link to invite me: https://discord.com/api/oauth2/authorize?client_id=871519299716661259&permissions=8&scope=bot')
+async def invite(message):
+  embed = discord.Embed(title = "Invite Me!", description = "Press this [link](https://discord.com/api/oauth2/authorize?client_id=871519299716661259&permissions=8&scope=bot) to invite me! If you have any questions join this [server](https://discord.gg/43h85cwVXs) so we can help you out!")
+  await message.channel.send(embed = embed)
+
+@client.command()
+async def support(ctx):
+  embed = discord.Embed(title = "Questions?", description = "If you have any questions make sure to join our [support server](https://discord.gg/43h85cwVXs) and make sure to ask our staff questions!")
+  await ctx.send(embed = embed)
+
+@client.command()
+async def avatar(ctx, member =None):
+	if member != None:
+		if member in ctx.guild.members:
+			em = discord.Embed(description='requested by:\n{0}'.format(ctx.author))
+			em.set_thumbnail(url=ctx.author.avatar_url)
+			await ctx.send(embed = em)
+		else:
+			member = ctx.message.author
+			em = discord.Embed(description='requested by:\n{0}'.format(ctx.author))
+			em.set_thumbnail(url=member.avatar_url)
+			await ctx.send(embed = em)
+	else:
+		em = discord.Embed(description='requested by:\n{0}'.format(ctx.author))
+		em.set_thumbnail(url=ctx.author.avatar_url)
+		await ctx.send(embed = em)
+
+@client.command()
+async def amc8(message, *, rest = None):
+	if rest == None:
+		await message.channel.send('hallo where is the info')
+		return
+	
+	rest = rest.split()
+	if len(rest) != 2:
+		await message.channel.send('wrong number of params')
+		return
+	try:
+		year = int(rest[0])
+		problem = int(rest[1])
+		if year < 1999 or year > 2020:
+			await message.channel.send("invalid year")
+			return
+		if problem < 1 or problem > 25:
+			await message.channel.send("invalid problem number")
+			return
+		await message.channel.send('https://mathproblemdispenserbotstorage.firebaseapp.com/amc8/' + str(year) + '/' + str(problem) + '.jpg')
+	except:
+		await message.channel.send('something went wrong, are you sure you put in two integers (year and problem number)?')
+
+
 
 
 keep_alive()
